@@ -31,6 +31,18 @@ public class MemoController {
         return new ResponseEntity<MemoResponseDto>(new MemoResponseDto(memo), HttpStatus.CREATED);
     }
 
+    @GetMapping
+    public List<MemoResponseDto> findAllMemos() {
+        List<MemoResponseDto> responseDtoList = new ArrayList<>();
+
+        for (Memo memo : memoList.values()) {
+            MemoResponseDto responseDto = new MemoResponseDto(memo);
+            responseDtoList.add(responseDto);
+        }
+
+        return responseDtoList;
+    }
+
     @GetMapping("/{id}")
     public MemoResponseDto findMemoById(@PathVariable Long id) {
         Memo memo = memoList.get(id);
