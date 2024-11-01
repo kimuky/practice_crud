@@ -55,18 +55,26 @@ public class MemoController {
     }
 
     @PutMapping("/{id}")
-    public MemoResponseDto updateMemoById(
+    public ResponseEntity<MemoResponseDto> updateMemoById(
             @PathVariable Long id,
             @RequestBody MemoRequestDto dto
     ) {
         Memo memo = memoList.get(id);
+
+        if (memo== null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        if (dto.getTitle() == null || dto.getContents() == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
 
         memo.update(dto);
 
         // 강의 내용에 없는 내용
         memoList.put(id, memo);
 
-        return new MemoResponseDto(memo);
+        return new ResponseEntity<>(new MemoResponseDto(memo), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
