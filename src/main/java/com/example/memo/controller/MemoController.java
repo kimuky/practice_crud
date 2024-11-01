@@ -77,6 +77,49 @@ public class MemoController {
         return new ResponseEntity<>(new MemoResponseDto(memo), HttpStatus.OK);
     }
 
+    @PatchMapping("/{id}")
+    public ResponseEntity<MemoResponseDto> UpdateTitle(
+            @PathVariable Long id,
+            @RequestBody MemoRequestDto dto
+    ) {
+        Memo memo = memoList.get(id);
+
+        // 없을 경우
+        if (memo == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        if (dto.getTitle() == null || dto.getContents() != null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        memo.updateTitle(dto);
+
+        return new ResponseEntity<>(new MemoResponseDto(memo),HttpStatus.OK);
+
+    }
+
+    // 추가 학습 컨텐츠만 바꿀대
+    @PatchMapping("/{id}")
+    public ResponseEntity<MemoResponseDto> updateContents (
+            @PathVariable Long id,
+            @RequestBody MemoRequestDto dto
+    ) {
+        Memo memo = memoList.get(id);
+
+        if (memo == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        if (memo.getContents() == null || memo.getTitle() != null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        memo.updateContents(dto);
+
+        return new ResponseEntity<>(new MemoResponseDto(memo), HttpStatus.OK);
+    }
+
     @DeleteMapping("/{id}")
     public void deleteMemo(@PathVariable Long id) {
         memoList.remove(id);
