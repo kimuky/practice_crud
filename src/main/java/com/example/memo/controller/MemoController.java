@@ -3,11 +3,12 @@ package com.example.memo.controller;
 import com.example.memo.dto.MemoRequestDto;
 import com.example.memo.dto.MemoResponseDto;
 import com.example.memo.entity.Memo;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @RequestMapping("memos")
@@ -16,7 +17,7 @@ public class MemoController {
     private final Map<Long, Memo> memoList = new HashMap<Long, Memo>();
 
     @PostMapping
-    public MemoResponseDto createMemo(@RequestBody MemoRequestDto dto) {
+    public ResponseEntity<MemoResponseDto> createMemo(@RequestBody MemoRequestDto dto) {
 
         // 식별자가 1씩 증가
         Long memoId = memoList.isEmpty() ? 1 : Collections.max(memoList.keySet()) + 1;
@@ -27,7 +28,7 @@ public class MemoController {
         // 인메모리 이비에 메모
         memoList.put(memoId, memo);
 
-        return new MemoResponseDto(memo);
+        return new ResponseEntity<MemoResponseDto>(new MemoResponseDto(memo), HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
